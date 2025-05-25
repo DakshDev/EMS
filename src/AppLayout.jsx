@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom"
 import SideMenuBar from "./components/SideMenuBar"
-import TopOptionBar from "./components/topOptionBar"
+import TopOptionBar from "./components/TopOptionBar"
 import Login from "./pages/Auth/Login"
 // Global Context
 import useGlobalContext from "./context/globalContext";
