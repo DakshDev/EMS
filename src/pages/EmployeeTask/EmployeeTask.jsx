@@ -72,6 +72,7 @@ function EmployeeTask(){
   // Suggest Profession
   function  suggestProfession(e) {
     const filteredData = empList.filter(emp => emp.auth.id == e.currentTarget.value)
+    console.log(filteredData);
     if(filteredData[0] != undefined) return setDisplayProfession(filteredData[0].profession);
     setDisplayProfession("");
   }

@@ -10,13 +10,6 @@ const authAdmin = {
 
 
 
-
-
-
-
-
-
-
 function LoginBox({customCls ,title, formSubmitHandler, inpNameTitle, placeholderNameTitle, placeholderPassTitle, anotherLoginTitle, whoLogin, setWhoLogin}) {
 
   function changeLoginUser() {
@@ -53,7 +46,7 @@ function LoginBox({customCls ,title, formSubmitHandler, inpNameTitle, placeholde
 function  Login({setIsAdminLogin}) {
 
   const {empList, whoIsLogin, setWhoIsLogin} = useEmplyeeContext();
-  const [whoLogin, setWhoLogin] = useState("employee");
+  const [whoLogin, setWhoLogin] = useState("admin");
 
   // Admin Login Handler
   const adminFormSubmitHandler = (e) => {

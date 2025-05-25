@@ -1,33 +1,51 @@
 import { useEffect, useState } from "react";
 import { FaCaretDown, FaCaretUp } from "react-icons/fa6";
-import useGlobalContext from "../../../context/globalContext"
+import {FaCheck} from "../../../icon/icons"
 
+import useGlobalContext from "../../../context/globalContext"
 import useEmplyeeContext from "../../../context/employeeContext";
 
 // Full Info Box
-function FullInfoTableData({title, value, checkStatus, selectEmployee, taskInfo}) {
+function FullInfoTableData({taskDetail, endDate, status, title, value, checkStatus, selectTask, selectEmployee}) {
   const {empList, setEmpList} = useEmplyeeContext()
   function successTaskHandler() {
-    let updateList = selectEmployee.taskInfo.filter((list, idx) => {
-      return list.task == taskInfo.task
+    let updateQueue = JSON.parse(JSON.stringify(selectTask));
+    updateQueue.status = "success";
+    const rmQueue = selectEmployee.taskInfo.filter(list => {
+      return list.task != selectTask.task;
     })
-    updateList[0].status = "success";
+    const updatedTask = [...rmQueue, updateQueue];
+    let updateEmployee = JSON.parse(JSON.stringify(selectEmployee))
+    updateEmployee.taskInfo = updatedTask;
 
-    let anotherList = selectEmployee.taskInfo.filter((list, idx) => {
-      return list.task != taskInfo.task
-    })
-    
-    const rmList = empList.filter(emp => {
-      return emp.auth.id != selectEmployee.auth.id
-    }) 
-    setEmpList([...rmList, {...selectEmployee, taskInfo: [...anotherList,...updateList]}])  
+    const rmEmployee = empList.filter(emp => {
+      return emp.auth.id != updateEmployee.auth.id;
+    });
+
+    setEmpList([...rmEmployee, updateEmployee])
   }
 
   return <div className="flex gap-2 items-start flex-nowrap rounded-md p-2 w-fit">
-    <span className="shrink-0 capitalize rounded-md p-2 px-4 bg-mainClr text-focusClr font-bold">{title}</span>
-    <span className="rounded-md p-2 px-4 bg-focusClr capitalize">{value}</span>
-    {checkStatus == "queue"  ? <span className="secButton capitalize" onClick={successTaskHandler}>Success Task</span> : ""}
-    <span></span>
+
+  {taskDetail ? 
+    <>
+      <span className="shrink-0 capitalize rounded-md p-2 px-4 bg-mainClr text-focusClr">{endDate}</span>
+      <span className="rounded-md p-2 px-4 bg-focusClr capitalize">{value}</span>
+      {status == "pending" ? <span className="shrink-0 capitalize rounded-md p-2 px-4 bg-orange-500 text-focusClr">{status}</span> : ""}
+      {status == "success" ? <span className="shrink-0 capitalize rounded-md p-2 px-4 bg-emerald-500 text-focusClr">{status}</span> : ""}
+      {status == "queue" ? 
+      <>
+      <span className="shrink-0 capitalize rounded-md p-2 px-4 bg-slate-700 text-focusClr">{status}</span>
+      <span onClick={successTaskHandler} className="cursor-pointer shrink-0 capitalize rounded-md p-2 px-4 bg-blue-500 text-focusClr flex gap-2 flex-nowrap items-center font-bold">Mark Completed<FaCheck className="size-5 font-bold fill-focusClr" /></span>
+      </> : ""}
+      
+    </>
+    :
+    <>
+      <span className="shrink-0 capitalize rounded-md p-2 px-4 bg-mainClr text-focusClr">{title}</span>
+      <span className="rounded-md p-2 px-4 bg-focusClr capitalize">{value}</span>
+    </>
+  }
     </div>
 }
 
@@ -98,7 +116,7 @@ function TableRow(
 
 
 // Task Row
-function TaskInfoTabeRow({no, id, fullName, endDate, status, task, customCls, allTask, selectEmployee}) {
+function TaskInfoTabeRow({no, id, fullName, profession, status, customCls, taskDetail, selectEmployee}) {
    // open More Info Handler
   const [isOpen, setIsOpen] = useState(false);
   function openMoreInfoHandler() {
@@ -112,11 +130,11 @@ function TaskInfoTabeRow({no, id, fullName, endDate, status, task, customCls, al
         <TableData data={no} />
         <TableData data={id} />
         <TableData data={fullName} />
-        <TableData data={endDate} />
-        <TableData data={status} customCls={customCls} />
+        <TableData data={profession} />
+        <TableData data={status} customCls={customCls}/>
         <td onClick={openMoreInfoHandler} className="p-2 w-52 bg-focusClr2 hover:text-focusClr cursor-pointer" >
           <div className="flex justify-between items-center">
-            <span className="text-white">Task Message</span>
+            <span className="text-white">Task Details</span>
             <span>{!isOpen ? <FaCaretDown className="fill-white"/> : <FaCaretUp className="fill-white"/>}</span>
           </div>
         </td>
@@ -124,7 +142,9 @@ function TaskInfoTabeRow({no, id, fullName, endDate, status, task, customCls, al
       {isOpen ? <tr>
         <td colSpan={6} >
           <div className="bg-focusClr2 p-2">
-            <FullInfoTableData selectEmployee={selectEmployee} taskInfo={allTask} title={`Task`} checkStatus={allTask.status} value={task}/>
+            {taskDetail.map((list, idx) => {
+              return <FullInfoTableData selectEmployee={selectEmployee} selectTask={list} key={idx} taskDetail={true} status={list.status} endDate={list.endDate} title="Task" value={list.task}/>
+            })}
           </div>
         </td>
       </tr> : ""} 
@@ -151,27 +171,21 @@ function TaskInfo({empList}){
           <Heading title="No" customClass="w-10"/>
           <Heading title="user ID"/>
           <Heading title="full name"/>
-          <Heading title="end date"/>
+          <Heading title="profession"/>
           <Heading title="status"/>
           <Heading title="task"/>
         </tr>
 
-        {taskData.map((emp, index) => {
-          return emp.taskInfo.map((list, idx) => {
-            if(list.status == "pending"){
-               return <TaskInfoTabeRow selectEmployee={emp} customCls="text-orange-500" key={Date.now()/4} no={index} id={emp.auth.id} fullName={emp.fullName} endDate={emp.taskInfo[idx].endDate} status={list.status} task={list.task} allTask={emp.taskInfo}/>
-            }
-            
-            if(list.status == "queue"){
-              return <TaskInfoTabeRow selectEmployee={emp} customCls="text-gray-500" key={Date.now()/5} no={index} id={emp.auth.id} fullName={emp.fullName} endDate={list.endDate} status={list.status} task={list.task} allTask={list}/>
-            }
-
-            if(list.status == "success"){
-              return <TaskInfoTabeRow selectEmployee={emp} customCls="text-emerald-500" key={Date.now()/6} no={index} id={emp.auth.id} fullName={emp.fullName} endDate={list.endDate} status={list.status} task={list.task} allTask={list}/>
-            }
-
+        {
+          taskData.map((emp, idx) => {
+            const taskDetail = emp.taskInfo.filter((list) => {
+              if(list.status == "pending") return list;
+              if(list.status == "queue") return list;
+              if(list.status == "success") return list;   
+            })
+             return <TaskInfoTabeRow selectEmployee={emp} customCls="text-blue-500" key={emp.auth.id} no={idx+1} id={emp.auth.id} fullName={emp.fullName} profession={emp.profession} status="Check Status ➔" taskDetail={taskDetail}/>
           })
-        })}
+        }
       </tbody>
     </table> : <span className="text-orange-500 font-bold">No Task Yet !</span>}
   </>

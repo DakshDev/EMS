@@ -64,13 +64,15 @@ function EmployeeDashboard() {
                 {whoIsLogin.taskInfo.map((list, idx) => (
                 <tr key={idx} className="border-b border-mainClr">
                   <td className="p-2 bg-focusClr capitalize">{idx+1}</td>
-                  <td className="p-2 bg-focusClr capitalize text-orange-500">{list.status}</td>
+                  {list.status == "queue" ? <td className="p-2 bg-focusClr font-bold capitalize text-slate-700">{list.status}</td>: ""}
+                  {list.status == "pending" ? <td className="p-2 bg-focusClr font-bold capitalize text-orange-500">{list.status}</td> : ""}
+                  {list.status == "success" ? <td className="p-2 bg-focusClr font-bold capitalize text-emerald-500">{list.status}</td>: ""}
                   <td className="p-2 bg-focusClr capitalize">{list.endDate}</td>
                   <td className="p-2 bg-focusClr capitalize">{list.task}</td>
                   <td className="p-2 bg-focusClr capitalize flex justify-end">
-                    {list.status == "queue" ? 
-                    <span className="p-2 bg-focusClr2 rounded-md text-focusClr font-bold">Waiting For Admin Respond</span> :
-                    <button onClick={() => completeTaskHandler(whoIsLogin, idx, list.task)} className="secButton">Mark as Completed</button> }
+                    {list.status == "queue" ? <span className="p-2 bg-focusClr2 rounded-md text-focusClr font-bold">Waiting For Admin Respond</span> : ""}
+                    {list.status == "pending" ? <button onClick={() => completeTaskHandler(whoIsLogin, idx, list.task)} className="secButton">Mark as Completed</button> : ""}
+                    {list.status == "success" ? <button className="bg-emerald-500 text-white p-2 rounded-md">Completed</button> : ""}
                     </td> 
                 </tr>
                 ))}
