@@ -29,7 +29,7 @@ function SideMenuBar() {
         <h1 className="text-xl">Admin Panel</h1>
         <div className="flex items-center gap-2 p-4 cursor-pointer rounded-md bg-focusClr">
         <span><FaCircleUser className="size-6 fill-focusClr2"/></span>
-        <span>Jhon Doe</span>
+        <span>Sync Coder</span>
       </div>
       </div>
       <div className="grid gap-2">

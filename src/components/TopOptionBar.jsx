@@ -62,7 +62,7 @@ function TopOptionBar({customTitle, settingSwitchTitle}){
     <div className="flex justify-between">
       <h1 className="text-2xl font-bold">{customTitle ? customTitle : pageName}</h1>
       <div className="flex items-center gap-2 relative">
-        <span className="p-2 rounded-md bg-priBgClr2 active:bg-focusClr cursor-pointer"><FaBell className="size-5 fill-focusClr2"/></span>
+        {/* <span className="p-2 rounded-md bg-priBgClr2 active:bg-focusClr cursor-pointer"><FaBell className="size-5 fill-focusClr2"/></span> */}
         <span className="p-2 rounded-md bg-priBgClr2 active:bg-focusClr cursor-pointer" onClick={settingHandler}><FaGear className="size-5 fill-focusClr2"/></span>
         {/* on click active */}
         <div onClick={(e) => e.stopPropagation()} ref={settingBox} className="absolute top-full right-0 py-2" style={{display: "none"}}>
